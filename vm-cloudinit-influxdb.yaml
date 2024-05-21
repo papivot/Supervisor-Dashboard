@@ -1,0 +1,175 @@
+#cloud-config
+
+package_update: true
+package_upgrade: true
+
+ssh:
+  emit_keys_to_console: false
+
+no_ssh_fingerprints: true
+
+ssh_pwauth: true
+users:
+  - name: vmware-system-user
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+    # Password set to Admin!23
+    passwd: '$6$8jLYuI5uLgpuEVFc$uFlPBmFOVodfWb59VJHISwJncbCWjyeWdIPaHLHfTZiQokYHfxOBUwwSjlEqALbsNTORvF2QM3YeI6vUCmOif/'
+    shell: /bin/bash
+
+package_update: true
+
+apt:
+  sources:
+    influxdata.list:
+      source: deb [arch=amd64] https://repos.influxdata.com/debian stable main
+      keyid: 9D539D90D3328DC7D6C8D3B9D8FF8E1F7DF8B07E
+
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - wget
+  - influxdb2
+  - influxdb2-cli
+  - net-tools
+  - zip
+  - jq
+
+disk_setup:
+  /dev/sdb:
+    table_type: gpt
+    layout: True
+    overwrite: True
+
+fs_setup:
+  - device: /dev/sdb
+    filesystem: ext4
+    partition: 1
+
+mounts:
+  - [ /dev/sdb1, /data, "auto", "defaults,noexec,nofail" ]
+
+write_files:
+  - path: /etc/ca.cert
+    content: |
+      -----BEGIN CERTIFICATE-----
+      MIIFwzCCA6ugAwIBAgIUNIxK/woQezIpQPkEGjdiJ276R14wDQYJKoZIhvcNAQEN
+      BQAwcTELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlZBMRAwDgYDVQQHDAdBc2hidXJu
+      MQswCQYDVQQKDAJTRTERMA8GA1UECwwIUGVyc29uYWwxIzAhBgNVBAMMGnVidW50
+      dS1udi0wMS5lbnYxLmxhYi50ZXN0MB4XDTI0MDUxNjE2MzcwN1oXDTM0MDUxNDE2
+      MzcwN1owcTELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlZBMRAwDgYDVQQHDAdBc2hi
+      dXJuMQswCQYDVQQKDAJTRTERMA8GA1UECwwIUGVyc29uYWwxIzAhBgNVBAMMGnVi
+      dW50dS1udi0wMS5lbnYxLmxhYi50ZXN0MIICIjANBgkqhkiG9w0BAQEFAAOCAg8A
+      MIICCgKCAgEAkhEh2GnVbNjSaFDmCmUI/dtzyItLCsAsjkdCmJck+UtRSaZYN5KR
+      V2Yg8UCnnQ58eWq/fS5zsYqczIDG+Jsw9Cx+6AH6obCF8KEpwhU7vLz78eZw649z
+      mpOME3zsQNpjqFMSv3fUxdWL+I4DuPhYjja35hrE5TFkcNsDoC7cSoicbMo+OkpG
+      P89sEr5YaG0d5/6wd8/p/oKFkX8Qkq3bhWKwgz1CB5cCvZo7b7XJaOQCFWthzI+L
+      TKXj+BmNJ6xOwnsqimtViVOV0GRMu7bd/fYWi3eH436THl9w4EFzpqodfY8+reB7
+      wwzl4ad2Io6AWGBsobQns82gcRxzwdRIUjydA7HkuP1lMRgcz58s8MkHgGD5a3+Z
+      GMMe90lWUa6vSFPyxW88OQ/lKmkXqX+YuYKRsV5o2/5oV59Ug4tlbDZW6wqjmALX
+      z2TvE4RjXLDj6fNSiKygWkuHh8ue/ncCiWbcxxb0kWVtH4y3pQ3gg4sm1qMgzycM
+      kUDq7SyjBKqsYzn82L2Tsxkpt7/SppPhGKSZxxfeyIDm/rOWKA3bt1HO5L+uOrUC
+      EJvls26k7gVGLPCr2cQ3DnzxzjUxl3jUmfL7koCmO3wfMESfHxO9qqt9r58AelbY
+      0XT4n7hMNI/pkj0emTY8qXM1AWEFD9LN/JF1FxT/PNt1RoUjgs0zFBMCAwEAAaNT
+      MFEwHQYDVR0OBBYEFG4hyni7ZNxLcZlcHgVmVKJ3CN77MB8GA1UdIwQYMBaAFG4h
+      yni7ZNxLcZlcHgVmVKJ3CN77MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEN
+      BQADggIBAC5103IEQbPaYzgc6BqQXRBlJtx3ET4Ok2zlmYmJZxWE1hQDZmnK/K9A
+      tBnAxuMDWpw/jNQJwwp4rTXTswBvPowjQF02cKphWyT68MvVS73G+Zsk/+t4EGFX
+      RcOJBzSQZmFasEtFPVxB1YxJv1xCtxDPN7FCJQFLn0phtd4IIOPFTmd5saZWd6Ny
+      ja7umiLR4IlnO6sfQgU46wSlpvv2UyPVKJTlq5VGwp2xkj8YqYVP+NTOCUsvzWbp
+      ryNSVb3vU8CXop4HhGH/b+0AVOd2efrUkH/Z4/HFgPVVY+UIQ7KsGoedmtLuGO6G
+      7Rnpf6LAREnSG0lv+f52sYOoGT1o4A3fr24fMU3yusXHE0e071eMRfpLGJKEQ8Py
+      +eSVcO94mrIyOnD+Slz+IxOYrKjb1b7FfX3wS15hAdv9oY46sdnGkxzV2MpC8q5E
+      Y7Tso3bC+jxh97oXFGvMI1Qvklt/fvaznL4ffhPd9Atghis8cNQ5YuBhEWH7zp2p
+      +GGq7RxPDRUgoJztTqbKxP24OYGNIoIdcfuUoueBbBLbOcMg4Kbl+5+wE8sIX7l0
+      71CJQHWFHSYIIH/+wCeSTlC+/BXJ4i9xrTWyaVMDVAfnE7wdjrrtkGCvzqXV9oG2
+      Lj240pfeddFnmOD4X9YXJld7TkKiN5frlF2tA/+o8HLoDUoh7JK7
+      -----END CERTIFICATE-----
+    owner: 'root:root'
+    permissions: '0444'
+  - path: /etc/ca.key
+    content: |
+      -----BEGIN PRIVATE KEY-----
+      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
+      R1tKIKHY5zg5ssR1Irkf7E9ZOEBfoWA=
+      -----END PRIVATE KEY-----
+    owner: 'root:root'
+    permissions: '0444'
+  - path: /influxdb/certs/v3.ext
+    content: |
+      authorityKeyIdentifier=keyid,issuer
+      basicConstraints=CA:FALSE
+      keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+      extendedKeyUsage = serverAuth
+      subjectAltName = @alt_names
+      [alt_names]
+      DNS.1=influxdb.h2o-4-24532.h2o.vmware.com
+    owner: root:root
+    permissions: '0644'
+runcmd:
+  - mkdir -p /influxdb/certs
+  - mkdir -p /data/influxdbv2/engine
+  - openssl genrsa -out /influxdb/certs/influxdb.key 4096
+  - openssl req -sha512 -new -subj "/C=US/ST=VA/L=Ashburn/O=SE/OU=Personal/CN=influxdb.h2o-4-24532.h2o.vmware.com" -key /influxdb/certs/influxdb.key -out /influxdb/certs/influxdb.csr
+  - openssl x509 -req -sha512 -days 365 -extfile /influxdb/certs/v3.ext -CA /etc/ca.cert -CAkey /etc/ca.key -CAcreateserial -in /influxdb/certs/influxdb.csr -out /influxdb/certs/influxdb.crt
+  - chown influxdb:influxdb /influxdb/certs/influxdb.crt
+  - chown influxdb:influxdb /influxdb/certs/influxdb.key
+  - chown -R influxdb:influxdb /data/influxdbv2
+  - echo "bolt-path = \"/var/lib/influxdb/influxd.bolt\"" > /etc/influxdb/config.toml
+  - echo "tls-cert = \"/influxdb/certs/influxdb.crt\"" >> /etc/influxdb/config.toml
+  - echo "tls-key = \"/influxdb/certs/influxdb.key\""  >> /etc/influxdb/config.toml
+  - echo "engine-path = \"/data/influxdbv2/engine\""  >> /etc/influxdb/config.toml
+  - systemctl daemon-reload
+  - systemctl restart influxdb
+  - influx setup --username telegrafuser --password Admin!23 --org VMware --bucket Supervisor --force --host https://localhost:8086 --skip-verify

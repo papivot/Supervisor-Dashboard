@@ -1,0 +1,69 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: influxdb-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: vc01cl01-t0compute
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: influxdb-configmap
+data:
+  hostname: vmware-influxdb
+  public-keys: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC5KYNeWQgVHrDHaEhBCLF1vIR0OAtUIJwjKYkY4E/5HhEu8fPFvBOIHPFTPrtkX4vzSiMFKE5WheKGQIpW3HHlRbmRPc9oe6nNKlsUfFAaJ7OKF146Gjpb7lWs/C34mjdtxSb1D/YcHSyqK5mxhyHAXPeK8lrxG5MLOJ3X2A3iUvXcBo1NdhRdLRWQmyjs16fnPx6840x9n5NqeiukFYIVhDMFErq42AkeewsWcbZQuwViSLk2cIc09eykAjaXMojCmSbjrj0kC3sbYX+HD2OWbKohTqqO6/UABtjYgTjIS4PqsXWk63dFdcxF6ukuO6ZHaiY7h3xX2rTg9pv1oT8WBR44TYgvyRp0Bhe0u2/n/PUTRfp22cOWTA2wG955g7jOd7RVGhtMHi9gFXeUS2KodO6C4XEXC7Y2qp9p9ARlNvu11QoaDyH3l0h57Me9we+3XQNuteV69TYrJnlgWecMa/x+rcaEkgr7LD61dY9sTuufttLBP2ro4EIWoBY6F1Ozvcp8lcgi/55uUGxwiKDA6gQ+UA/xtrKk60s6MvYMzOxJiUQbWYr3MJ3NSz6PJVXMvlsAac6U+vX4U9eJP6/C1YDyBaiT96cb/B9TkvpLrhPwqMZdYVomVHsdY7YriJB93MRinKaDJor1aIE/HMsMpbgFCNA7mma9x5HS/57Imw== admin@corp.local
+  # Append value of vm-cloudinit.txt|base64
+  user-data: 
+---
+apiVersion: vmoperator.vmware.com/v1alpha1
+kind: VirtualMachine
+metadata:
+  labels:
+    vm-selector: vmware-influxdb
+  name: vmware-influxdb
+spec:
+  imageName: vmi-e41307c94604643de
+  className: best-effort-xsmall
+  powerState: poweredOn
+  storageClass: vc01cl01-t0compute
+  advancedOptions:
+    defaultVolumeProvisioningOptions:
+      thinProvisioned: true
+  volumes:
+  - name: influxdb-vol
+    persistentVolumeClaim:
+      claimName: influxdb-pvc
+  networkInterfaces:
+  - networkType: nsx-t
+#    networkName: k8s-workload
+  readinessProbe:
+    tcpSocket:
+      port: 22
+  vmMetadata:
+    configMapName: influxdb-configmap
+    transport: CloudInit
+---
+apiVersion: vmoperator.vmware.com/v1alpha1
+kind: VirtualMachineService
+metadata:
+  name: vmware-influxdb
+spec:
+  ports:
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 8086
+  selector:
+    vm-selector: vmware-influxdb
+  type: LoadBalancer
