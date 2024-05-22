@@ -172,4 +172,4 @@ runcmd:
   - echo "engine-path = \"/data/influxdbv2/engine\""  >> /etc/influxdb/config.toml
   - systemctl daemon-reload
   - systemctl restart influxdb
-  - influx setup --username telegrafuser --password Admin!23 --org VMware --bucket Supervisor --force --host https://localhost:8086 --skip-verify
+  - influx setup --username telegrafuser --password "Admin!23" --org VMware --bucket Supervisor --force --host https://localhost:8086 --skip-verify

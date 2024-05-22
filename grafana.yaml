@@ -61,7 +61,7 @@ spec:
       "tlsSkipVerify": true
       "version": "Flux"
     secureJsonData:
-      token: "FEq0AGFnzZsVWO1aNK1yB-KvD6EiQYMOWZlWMQvDARuc2e4byjwG8wQtUnQp6qKQS2h4oHXLnW6uUTv4B8_SAw=="
+      token: "{{INFLUXDB API TOKEN}}"
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
