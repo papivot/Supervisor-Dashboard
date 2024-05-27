@@ -1,6 +1,6 @@
 # Supervisor-Dashboard
 
-Dashboard 1 - CPU/Memory/Disk/Networkign metrics. 
+## Dashboard 1 - CPU/Memory/Disk/Networking metrics. 
 
 <img src="images/CPUimage1.png" title="CPU 1">
 <img src="images/CPUimage2.png" title="CPU 2">
@@ -9,7 +9,7 @@ Dashboard 1 - CPU/Memory/Disk/Networkign metrics.
 
 ---
 
-Dashboard 2 - Kubernetes metrics. 
+## Dashboard 2 - Kubernetes metrics. 
 
 <img src="images/K8simage1.png" title="K8S 1">
 <img src="images/K8simage2.png" title="K8S 2">
@@ -17,7 +17,7 @@ Dashboard 2 - Kubernetes metrics.
 
 ---
 
-Chnages to be made to the Supervisor Telegraf Configmap
+Changes to be made to the Supervisor Telegraf Configmap
 
 ```
     [[outputs.influxdb_v2]]
