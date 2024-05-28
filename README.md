@@ -1,5 +1,32 @@
 # Supervisor-Dashboard
 
+Step 1. Deploy the `vmsvc-influxdb.yaml` in the Supervisor Namespace. 
+
+```
+kubectl apply -f vmsvc-influxdb.yaml -n demo1
+```
+
+Step 2. Changes to be made to the Supervisor Telegraf Configmap. Login to the Supervisor Control Plane VM and modify the CM.
+
+```
+    [[outputs.influxdb_v2]]
+       urls = ["https://vmware-influxdb.demo1.svc.cluster.local"]
+       organization = "VMware"
+       token = "{{INFLUXDB API TOKEN}}"
+       bucket = "Supervisor"
+       insecure_skip_verify = true
+```
+
+Restart the Telegraf Daemonset.
+
+Step 3. Validate data is flowing to InfluxDB.
+
+Step 4. Setup Grafana instance and enjoy the dashboards. 
+
+```
+kubectl apply -f grafana.yaml
+```
+
 ## Dashboard 1 - CPU/Memory/Disk/Networking metrics. 
 
 <img src="images/CPUimage1.png" title="CPU 1">
@@ -17,14 +44,5 @@
 
 ---
 
-Changes to be made to the Supervisor Telegraf Configmap
 
-```
-    [[outputs.influxdb_v2]]
-       urls = ["https://vmware-influxdb.demo1.svc.cluster.local"]
-       organization = "VMware"
-       token = "{{INFLUXDB API TOKEN}}"
-       bucket = "Supervisor"
-       insecure_skip_verify = true
-```
 
