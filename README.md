@@ -18,13 +18,18 @@ Step 2. Changes to be made to the Supervisor Telegraf Configmap. Login to the Su
 ```
 
 Restart the Telegraf Daemonset.
+```
+kubectl rollout restart telegraf -n vmware-system-monitoring
+```
 
 Step 3. Validate data is flowing to InfluxDB.
 
 Step 4. Setup Grafana instance and enjoy the dashboards. 
 
 ```
-kubectl apply -f grafana.yaml
+kubectl apply -f grafana.yaml -n demo1
+kubectl apply -f grafana-dashboard-1.yaml -n demo1
+kubectl apply -f grafana-dashboard-2.yaml -n demo1
 ```
 
 ## Dashboard 1 - CPU/Memory/Disk/Networking metrics. 
