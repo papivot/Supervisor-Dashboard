@@ -23,7 +23,7 @@ kubectl edit cm -n vmware-system-monitoring telegraf-config
 
 Restart the Telegraf Daemonset.
 ```
-kubectl rollout restart telegraf -n vmware-system-monitoring
+kubectl rollout restart  -n vmware-system-monitoring daemonset telegraf
 ```
 
 Step 3. Validate data is flowing to InfluxDB.
