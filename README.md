@@ -9,6 +9,10 @@ kubectl apply -f vmsvc-influxdb.yaml -n demo1
 Step 2. Changes to be made to the Supervisor Telegraf Configmap. Login to the Supervisor Control Plane VM and modify the CM.
 
 ```
+kubectl edit cm -n vmware-system-monitoring telegraf-config
+```
+
+```
     [[outputs.influxdb_v2]]
        urls = ["https://vmware-influxdb.demo1.svc.cluster.local"]
        organization = "VMware"
